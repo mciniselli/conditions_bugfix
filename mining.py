@@ -1,18 +1,14 @@
 import logging
+
 logging.basicConfig(level=logging.INFO, format='%(asctime)s :: %(levelname)s :: %(message)s')
 
-import gzip
 import json
-import re
 import os
 import sys
-from dateutil.parser import isoparse
 from model import Repository, Commit
 import traceback
 
 from subprocess import Popen, PIPE, STDOUT
-
-from construct_processing import *
 
 from utils.inputoutput import WriteFile, ReadFile
 
@@ -25,14 +21,10 @@ from utils.progress import get_progress_value, read_progress_file, update_progre
 
 data_path = 'input'
 
-sha_regex = '[0-9a-f]{6,40}'
-
 
 def extract_data(fix_commit, num_processed, file_name, id_internal, id_row):
-
     try:
         repo = Repository(fix_commit.repository)
-        #repo.test(fix_commit)
         repo.miner(fix_commit, fix_commit.repository, num_processed, file_name, id_internal, id_row)
 
 
@@ -44,10 +36,9 @@ def extract_data(fix_commit, num_processed, file_name, id_internal, id_row):
 
 
 def main(file_names):
-
     logging.info(f'files count: {len(file_names)}')
 
-    if os.path.exists("result")==False:
+    if os.path.exists("result") == False:
         os.makedirs("result")
 
     tot_processed = 0
@@ -57,16 +48,16 @@ def main(file_names):
         try:
             with open(os.path.join(data_path, file_name)) as f:
 
-                index_start=get_progress_value(file_name)
+                index_start = get_progress_value(file_name)
 
                 print("INDEX START: {}".format(index_start))
 
                 for i, line in enumerate(f):
 
-                    if i<=index_start:
+                    if i <= index_start:
                         continue
 
-                    data=json.loads(line)
+                    data = json.loads(line)
 
                     tot_processed += 1
 
@@ -80,8 +71,8 @@ def main(file_names):
                         after=data['after_api'],
                         changes=data['modifications'],
 
-                    ), i+1, data['file_path'], data['id_internal'], i)
-                    #sys.exit(0)
+                    ), i + 1, data['file_path'], data['id_internal'], i)
+                    # sys.exit(0)
 
                     # update progress bar
                     update_progress_bar(file_name, i)
@@ -95,12 +86,11 @@ def main(file_names):
 
 
 if __name__ == "__main__":
-
     init_global()
 
     file_names = [f for f in os.listdir(data_path) if f.endswith('.txt')]
 
-    settings.file_list=file_names
+    settings.file_list = file_names
 
     read_progress_file()
 

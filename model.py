@@ -12,8 +12,6 @@ import os
 
 from utils.textprocessing import TextProcessing
 
-from utils.methodscomparison import MethodComparison
-
 from utils.inputoutput import WriteFile, ReadFile, store_before_after_file
 
 java_path = "output_files"
